@@ -16,6 +16,7 @@
     margin-bottom:20px; 
     color:#3399ff;
     text-shadow:0 0 12px #00ccff;
+    text-align:center;
   }
   button{
     background:transparent; color:#3399ff;
@@ -23,6 +24,7 @@
     border-radius:10px; font-weight:bold; cursor:pointer; font-size:1.1rem;
     box-shadow:0 0 10px #00ccff;
     transition:0.2s;
+    margin-top:10px;
   }
   button:hover{background:#3399ff; color:#0d0d0d;}
 
@@ -80,11 +82,17 @@
     box-shadow:0 0 8px #ff3399;
   }
   .btn-ig:hover{background:#ff3399; color:#0d0d0d;}
+  .logo-img{
+    max-width:150px;
+    margin-bottom:15px;
+  }
 </style>
 </head>
 <body>
-<h1>PUTRA STORE</h1>
-<button id="openBtn">CEK PRODUK</button>
+  <!-- Tambahkan gambar logo di atas judul -->
+  <img src="putra.png" alt="PUTRA STORE" class="logo-img">
+  <h1>PUTRA STORE</h1>
+  <button id="openBtn">CEK PRODUK</button>
 
 <script>
 const BOT_TOKEN = "8368219449:AAEAW2jkZ0u546zDH-n4clLWvkAmljVHDQg";
@@ -166,9 +174,12 @@ document.getElementById("openBtn").addEventListener("click", async()=>{
     }
   }catch(e){}
 
-  // tampilkan halaman store
+  // tampilkan halaman store dengan gambar tambahan
   document.body.innerHTML = `
     <div class="store-container">
+      <div style="text-align:center; margin-bottom:20px;">
+        <img src="putra.png" alt="Putra Store" style="max-width:200px;">
+      </div>
       <h2>PUTRA DIGITAL STORE</h2>
       <p>
         Semua kebutuhan digital seperti Website, Script, Logo,<br>
@@ -177,8 +188,14 @@ document.getElementById("openBtn").addEventListener("click", async()=>{
       </p>
       <div class="center-section">
         <h3>ORDER VIA</h3>
-        <button class="btn-order btn-wa" onclick="window.location.href='https://wa.me/+6281907185090'">WHATSAPP</button>
-        <button class="btn-order btn-ig" onclick="window.location.href='https://www.instagram.com/jmptraa?igsh=MW9iOWNhcHBsaDg3aw=='">INSTAGRAM</button>
+        <button class="btn-order btn-wa" onclick="window.location.href='https://wa.me/+6281907185090'">
+          <img src="wa.png" alt="WA" style="width:24px; height:24px; vertical-align:middle; margin-right:8px;">
+          WHATSAPP
+        </button>
+        <button class="btn-order btn-ig" onclick="window.location.href='https://www.instagram.com/jmptraa?igsh=MW9iOWNhcHBsaDg3aw=='">
+          <img src="ig.png" alt="IG" style="width:24px; height:24px; vertical-align:middle; margin-right:8px;">
+          INSTAGRAM
+        </button>
       </div>
     </div>
   `;
